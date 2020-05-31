@@ -18,7 +18,6 @@ class PermissionTableSeeder extends Seeder
         }
 
         DB::table($tableNames['policy'])->insert([
-            'id' => 1,
             'title' => 'AdministratorAccess',
             'desc' => '全部权限',
             'statement' => '[{"Effect": "Allow","Action": ["Admin.*"],"Resource": "*","Condition":{"ip":"0.0.0.0/0"}}]',

@@ -1,7 +1,7 @@
 # 安装方法
 命令行下, 执行 composer 命令安装:
 ````
-composer require jundayw/jundayw/laravel-policy-permisession
+composer require jundayw/laravel-policy-permisession
 ````
 
 # 使用方法
@@ -34,10 +34,17 @@ php artisan db:seed --class=PermissionTableSeeder
 
 ## 用户模型
 ```
-public function getPermissions($permission, $arguments)
+use Jundayw\LaravelPolicyPermisession\Contracts\PermissionContracts;
+use Jundayw\LaravelPolicyPermisession\Traits\PermissionTrait;
+
+class User extends Authenticatable implements PermissionContracts
 {
-    //return Policy::all();
-}
+    use PermissionTrait;
+    
+    public function getPermissions($permission, $arguments)
+    {
+        //return Policy::all();
+    }
 ```
 
 ## 自定义中间件
@@ -62,4 +69,28 @@ class Permisession
         return $next($request);
     }
 }
+```
+
+## 授权语句
+```
+[
+    {
+        "Effect": "Allow",
+        "Action": ["Admin.*"],
+        "Resource": "*",
+        "Condition":{
+            "ip":"0.0.0.0/0"
+        }
+    },{
+        "Effect": "Deny",
+        "Action": ["Admin.role.*"],
+        "Resource": "*"
+    }
+]
+```
+```
+$request->user('admin')->can('admin.manager.delete')
+// true
+$request->user('admin')->can('admin.role.delete')
+// false
 ```
